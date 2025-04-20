@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Study Buddy - Your Learning Companion"/>
+  <title>Study Buddy - User Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to bottom, #121212, #1e1e2f);
+      color: #ffffff;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #1e1e2f;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+      text-align: left;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .section {
+      margin-bottom: 20px;
+      padding: 15px;
+      border-radius: 10px;
+    }
+
+    .tech-fields { background: #0077cc; color: #ffcc00; }
+    .professional-skills { background: #009688; color: #ffffff; }
+    .other-curricular { background: #8e44ad; color: #ffffff; }
+    .hobbies { background: #e94046; color: #ffffff; }
+    .availability { background: #4caf50; color: #ffffff; }
+
+    .options-group {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .option {
+      padding: 10px 15px;
+      margin: 5px;
+      border-radius: 5px;
+      background: #333;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    .option:hover {
+      transform: scale(1.05);
+    }
+
+    .option:hover {
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+}
+
+    .option.selected {
+  background: #ffcc00;
+  color: #000;
+  transform: scale(1.08);
+  box-shadow: 0 0 10px rgba(255, 204, 0, 0.6);
+}
+
+.container {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+  
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #ffcc00;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin-top: 20px;
+    }
+
+    button:hover {
+      background: #ff6f61;
+    }
+
+    .container {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+button.loading::after {
+  content: '';
+  border: 2px solid transparent;
+  border-top: 2px solid #000;
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  margin-left: 10px;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>User Profile Setup</h2>
+  <form id="profile-form">
+    <input type="text" id="fullName" placeholder="Full Name" required>
+    <input type="number" id="age" placeholder="Age" required>
+
+    <select id="gender" name="gender" required>
+      <option value="">Select Gender</option>
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+      <option value="Other">Other</option>
+    </select>
+
+    <input type="text" id="location" placeholder="Location" required>
+    <input type="text" id="collegeName" placeholder="College Name" required>
+
+    <select id="university" name="university">
+      <option value="">Select University/ Institute Type</option>
+      <option value="AKTU">AKTU</option>
+      <option value="DU">Delhi University</option>
+      <option value="IIT">IIT</option>
+      <option value="NIT">NIT</option>
+      <option value="IIIT">IIIT</option>
+      <option value="BITS">BITS</option>
+      <option value="Private">Private University</option>
+      <option value="Other">Other</option>
+    </select>
+
+    <div class="section hobbies">
+      <h3>Hobbies & Interests</h3>
+      <div class="options-group" id="hobbies-group">
+        <div class="option">Reading</div>
+        <div class="option">Gaming</div>
+        <div class="option">Traveling</div>
+        <div class="option">Music</div>
+        <div class="option">Photography</div>
+      </div>
+    </div>
+
+    <div class="section availability">
+      <h3>Availability for Collaboration</h3>
+      <select id="availability" name="availability">
+        <option value="">Select Availability</option>
+        <option value="Day">Day</option>
+        <option value="Night">Night</option>
+        <option value="Flexible">Flexible</option>
+      </select>
+    </div>
+
+    <div class="section professional-skills">
+      <h3>Preferred Study Mode</h3>
+      <select id="studyMode" name="studyMode">
+        <option value="">Select Study Mode</option>
+        <option value="Solo Study">Solo Study</option>
+        <option value="Group Study">Group Study</option>
+        <option value="Online Courses">Online Courses</option>
+      </select>
+    </div>
+
+    <div class="section tech-fields">
+      <h3>Tech Fields</h3>
+      <div class="options-group" id="tech-group">
+        <div class="option">HTML</div>
+        <div class="option">CSS</div>
+        <div class="option">JavaScript</div>
+        <div class="option">Python</div>
+        <div class="option">MERN Stack</div>
+        <div class="option">MongoDB</div>
+        <div class="option">Express.js</div>
+        <div class="option">Hackathons</div>
+      </div>
+    </div>
+
+    <div class="section professional-skills">
+      <h3>Professional Skills</h3>
+      <div class="options-group" id="skills-group">
+        <div class="option">Leadership</div>
+        <div class="option">Public Speaking</div>
+        <div class="option">Project Management</div>
+        <div class="option">Problem Solving</div>
+        <div class="option">Analytical Thinking</div>
+        <div class="option">Time Management</div>
+      </div>
+    </div>
+
+    <div class="section other-curricular">
+      <h3>Co-Curricular Activities</h3>
+      <div class="options-group" id="co-curricular-group">
+        <div class="option">Debating</div>
+        <div class="option">Sports</div>
+        <div class="option">Music</div>
+        <div class="option">Dance</div>
+        <div class="option">Drama</div>
+      </div>
+    </div>
+
+    <button type="button" onclick="saveProfile()">Save Profile</button>
+  </form>
+</div>
+
+<script>
+  // Toggle .selected on click
+  document.querySelectorAll('.option').forEach(option => {
+    option.addEventListener('click', () => {
+      option.classList.toggle('selected');
+    });
+  });
+
+  // Get selected options from a group
+  function getSelectedOptions(groupId) {
+    return Array.from(document.querySelectorAll(`#${groupId} .option.selected`))
+                .map(opt => opt.textContent.trim());
+  }
+
+  const saveBtn = document.querySelector("button");
+
+  // Save profile function
+  function saveProfile() {
+    saveBtn.classList.add("loading");
+    saveBtn.disabled = true;
+    saveBtn.textContent = "Saving...";
+
+    const data = {
+      name: document.getElementById("name")?.value || document.getElementById("fullName")?.value,
+      email: document.getElementById("email")?.value || "",
+
+      age: document.getElementById("age")?.value || "",
+      gender: document.getElementById("gender")?.value,
+      location: document.getElementById("location")?.value || "",
+      collegeName: document.getElementById("collegename")?.value || "",
+      university: document.getElementById("university")?.value || "",
+      availability: document.getElementById("availability")?.value || "",
+      studyMode: document.getElementById("studymode")?.value || "",
+
+      hobbies: getSelectedOptions("hobbies-group"),
+      techFields: getSelectedOptions("tech-group"),
+      professionalSkills: getSelectedOptions("skills-group"),
+      coCurricular: getSelectedOptions("co-curricular-group")
+    };
+
+    fetch('/api/saveProfile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    })
+    .then(res => {
+      if (res.ok) {
+        saveBtn.textContent = "Saved ✅";
+      } else {
+        alert("Failed to save profile.");
+        saveBtn.textContent = "Save Profile";
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Error saving profile.");
+      saveBtn.textContent = "Save Profile";
+    })
+    .finally(() => {
+      saveBtn.classList.remove("loading");
+      saveBtn.disabled = false;
+
+      setTimeout(() => {
+        saveBtn.textContent = "Save Profile";
+      }, 2000);
+    });
+  }
+
+  // Attach save function to button
+  saveBtn.addEventListener("click", saveProfile);
+</script>
+</body>

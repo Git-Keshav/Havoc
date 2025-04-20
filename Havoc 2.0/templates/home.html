@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Study Buddy - Your Learning Companion" />
+  <title>StudySync</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet" />
+  <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.82/build/spline-viewer.js"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+    
+    body {
+      font-family: 'Poppins', 'Comfortaa', sans-serif;
+      background-color: #121212;
+      color: #ffffff;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+    }
+    
+    /* Navbar */
+    .navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      background-color: #1e1e2f;
+      padding: 15px 0;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+    }
+    
+    .nav-item {
+      position: relative;
+      display: inline-block;
+      margin: 0 20px;
+      padding: 10px 20px;
+      color: #ffcc00;
+      font-size: 1.1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-item::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 5px;
+      width: 100%;
+      height: 2px;
+      background-color: #ffcc00;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease-in-out;
+    }
+    
+    .nav-item:hover::after {
+      transform: scaleX(1);
+    }
+
+    .profile-tab {
+      background-color: #252d2d;
+      padding: 12px 20px;
+      border-radius: 8px;
+      margin: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 10px rgba(244, 240, 240, 0.1);
+      animation: slideIn 0.4s ease;
+    }
+
+    .profile-tab.hidden {
+      display: none;
+    }
+
+    .complete-btn {
+      background-color: #ffa200;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    .complete-btn:hover {
+      background-color: #ff8c00;
+    }
+
+    @keyframes slideIn {
+      0% {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Header Section */
+    header {
+      background: linear-gradient(-45deg, #ff6f61, #ff9f43, #4b7bec, #1e1e2f);
+      background-size: 300% 300%;
+      animation: gradient 8s ease infinite;
+      color: white;
+      padding: 80px 20px;
+      text-align: center;
+      margin-top: 60px;
+    }
+    
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    /* Features */
+    .features {
+      display: flex;
+      justify-content: center;
+      gap: 50px;
+      padding: 50px;
+      flex-wrap: wrap;
+    }
+    
+    .feature-box {
+      flex: 1;
+      max-width: 350px;
+      background-color: #2c2c54;
+      padding: 30px;
+      text-align: center;
+      border-radius: 15px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+      transition: transform 0.3s ease;
+    }
+    
+    .feature-box:hover {
+      transform: translateY(-8px);
+    }
+    
+    .feature-box img {
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 15px;
+      border-radius: 8px;
+    }
+    
+    /* Spline Viewer */
+    .spline-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 40px;
+    }
+    
+    spline-viewer {
+      width: 90vw;
+      height: 500px;
+    }
+    
+    /* General Section */
+    .section {
+      background: #1e1e2f;
+      padding: 30px;
+      margin: 40px auto;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(249, 248, 248, 0.1);
+      max-width: 700px;
+      text-align: center;
+    }
+    
+    /* Check-in Button */
+    .checkin-button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    
+    /* Calendar */
+    .calendar {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 15px;
+    }
+    
+    .day {
+      width: 60px;
+      height: 60px;
+      background-color: rgb(255, 255, 255);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+      padding: 12px;
+      color: #2c3e50;
+      border: 1px solid #000000;
+    }
+    
+    .day.checked-in {
+      background-color: #4CAF50;
+      color: white;
+    }
+    
+    /* Hover for white days */
+.day:not(.checked-in):hover {
+  transform: scale(1.07);
+}
+
+/* Hover for checked-in green days */
+.day.checked-in:hover {
+  transform: scale(1.07);
+}
+
+    .day.has-event {
+      background-color: #000000;
+      color: #ffffff;
+      font-weight: bold;
+      border: 1px solid #000000;
+    }
+    
+    /* Calendar Layout */
+    .calendar-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      justify-content: center;
+      margin: 50px auto;
+      max-width: 1000px;
+    }
+    
+    .calendar-box,
+    .event-form {
+      background: #2c2c54;
+      padding: 20px;
+      border-radius: 15px;
+      max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 4px 12px rgba(250, 250, 250, 0.1);
+  margin: 0 auto;
+  overflow: hidden;
+    }
+
+    #monthYear {
+  color: rgb(253, 243, 243);
+}
+    
+    /* Calendar Header */
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      color: #2c3e50;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    
+    /* Calendar Grid */
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+    
+    /* Event Form */
+    .event-form input,
+    .event-form button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    
+    .event-form {
+      background: #2c2c54;
+      padding: 20px;
+      border-radius: 15px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      box-sizing: border-box;
+      margin: 30px auto 0 auto;
+      text-align: center;
+    }
+    
+ /* Add Event button */
+.event-form button {
+  background-color: #f9c90a;
+  color: #1e1e2f;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
+}
+
+.event-form button:hover {
+  background-color: #ff3352;
+  transform: scale(1.05);
+}
+
+/* Remove Event button (already has some style) */
+.remove-btn {
+  background-color: #e74c3c;
+  color: white;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.remove-btn:hover {
+  background-color: #c0392b;
+  transform: scale(1.05);
+}
+    
+    /* Responsive */
+    @media screen and (max-width: 600px) {
+      .calendar-grid {
+        grid-template-columns: repeat(7, 1fr);
+        gap: 4px;
+      }
+    
+      .calendar-box {
+        padding: 15px;
+      }
+    
+      .day {
+        padding: 10px;
+        font-size: 12px;
+      }
+    }
+    
+    /* Pomodoro Section */
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 40px;
+    }
+    
+    .pomodoro {
+      background: #2c2c54;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+      padding: 30px;
+      text-align: center;
+      width: 350px;
+      color: #ffffff;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .pomodoro:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.6);
+    }
+    
+    .pomodoro button {
+      margin: 5px;
+      padding: 10px 15px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background-color: #090909;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    
+    .pomodoro button:hover {
+      background-color: #6745a2;
+    }
+    
+    .pomodoro-time {
+      font-size: 64px;
+      font-weight: bold;
+      margin: 20px 0;
+      color: #f7f5f5;
+    }
+    
+    /* Music Section */
+    .music-section {
+      margin-top: 20px;
+    }
+    
+    .music-thumbnails img {
+      width: 80px;
+      height: 60px;
+      border-radius: 8px;
+      margin: 5px;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+    </style>
+    
+</head>
+
+<body>
+  <nav class="navbar">
+    <a href="/home" onclick="window.location.href='/home';" class="nav-item">Home</a>
+    <a href="/login" onclick="window.location.href='/log_reg';"class="nav-item">Sign In</a>
+    <a href="/buddies" onclick="window.location.href='/buddies';"class="nav-item">Buddies</a>
+    <a href="/chatroom" onclick="window.location.href='/chatroom';"class="nav-item">Chat</a>
+  </nav>
+
+  <header>
+    <h1>StudySync</h1>
+    <p>Welcome to Study Buddy: your ultimate companion in learning and growth! 🌱</p>
+  </header>
+
+  <div id="profileTab" class="profile-tab">
+    <span>🚀 Complete your profile to unlock full features!</span>
+
+    <button id="complete_profile" class="complete-btn" <a href="/profile" onclick="window.location.href='/profile';" class="nav-item", </a> Complete Now</button>
+    
+  </div>
+
+  <div class="section">
+    <h2>Daily Login Checkup</h2>
+    <div class="calendar" id="loginCalendar"></div>
+  </br>
+    <button id="checkinButton" class="checkin-button" onclick="checkIn()">Check In</button>
+    <p id="message"></p>
+  </div>
+
+  <section class="features">
+    
+    <div class="feature-box">
+      <img src="https://th.bing.com/th/id/R.fa75fae0d0017c5ab42ff044bdfbd23a?rik=ysZqxrgyp6SQlA&riu=http%3a%2f%2fwww.smbceo.com%2fwp-content%2fuploads%2f2018%2f07%2fprofessional-behavior.jpg&ehk=x4HQPlelw1p05dwHMiTj9CzWMxZaY7zUOMg9UewA%2bEE%3d&risl=&pid=ImgRaw&r=0" alt="Feature 1">
+      <h2>Be productive</h2>
+      <p>Maximize your study efficiency with focused techniques.</p>
+    </div>
+    <div class="feature-box">
+      <img src="https://i.pinimg.com/originals/0b/12/fd/0b12fd6e02400462e367e34fab2a2a71.jpg" alt="Feature 2">
+      <h2>Unlimited Collaborations</h2>
+      <p>Unlock new opportunities with Study Buddy.</p>
+    </div>
+  </section>
+
+  <div>
+    <center><h2>Productivity Tools </h2></center> 
+  </div>
+
+  <section class="calendar-section">
+    <div class="calendar-box">
+      <h3 style="color:#ffcc00; text-align:center;">📅 Calendar</h3>
+  <div class="calendar-header">
+    <button onclick="prevMonth()">⬅️</button>
+    <h4 id="monthYear"></h4>
+    <button onclick="nextMonth()">➡️</button>
+  </div>
+  <div class="calendar-grid" id="calendarGrid"></div>
+
+    <div class="event-form">
+      <h3 style="color:#f9c90a; text-align:center;">Add / Remove Event</h3>
+      <input type="date" id="eventDate">
+      <input type="text" id="eventName" placeholder="Event Name">
+      <button onclick="addEvent()">➕ Add Event</button>
+      <button class="remove-btn" onclick="removeEvent()">❌ Remove Event</button>
+    </div>
+  </section> 
+
+  <h2><center>Pomodoro Timer</center></h2>
+  <div class="container">
+    <div class="pomodoro">
+
+      <h2 style="color: #47fffc; font-weight: bold;">Let's Focus...⏰</h2>
+      <div class="pomodoro-time" id="timer">25:00</div>
+      <button onclick="startTimer()">Start</button>
+      <button onclick="pauseTimer()">Pause</button>
+      <button onclick="resetTimer()">Reset</button>
+      <button onclick="switchToBreak()">5-Min Break</button>
+
+      <div class="music-section">
+        <div class="music-thumbnails">
+          <img src="https://img.youtube.com/vi/5qap5aO4i9A/0.jpg" onclick="changeMusic('youtube', '5qap5aO4i9A', this)" class="active">
+          <img src="https://img.youtube.com/vi/hHW1oY26kxQ/0.jpg" onclick="changeMusic('youtube', 'hHW1oY26kxQ', this)">
+          <img src="https://img.youtube.com/vi/7NOSDKb0HlU/0.jpg" onclick="changeMusic('youtube', '7NOSDKb0HlU', this)">
+        </div>
+        <iframe id="musicFrame" src="https://www.youtube.com/embed/5qap5aO4i9A?enablejsapi=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        <video id="localVideo" controls style="display:none;"><source src="your-local-video.mp4" type="video/mp4"></video>
+        <button onclick="playMusic()">Play</button>
+        <button onclick="stopMusic()">Stop</button>
+      </div>
+    </div>
+  </div>
+
+  <section style="text-align: center; margin-top: 50px; color: #ffcc00; font-size: 2rem;">
+    <h2>Connect Globally</h2>
+    <p style="font-size: 1.1rem; color: #ccc;">Meet learners across the world and share your journey.</p>
+  </section>
+
+  <div class="spline-container">
+    <spline-viewer loading-anim-type="spinner-small-light" url="https://prod.spline.design/O-xDjTFoYOUggFw4/scene.splinecode"></spline-viewer>
+  </div>
+
+  <footer>
+    <center><p>&copy; 2025 Study Buddy - All Rights Reserved.</p></center>
+  </footer>
+
+  <script>
+     document.querySelector('.nav-item[href="/home"]').addEventListener('click', function (e) {
+    e.preventDefault(); // Stop the default scroll behavior
+    location.reload();  // Refresh the page
+    
+  });
+    
+        // Simulated profile completion status
+        let isProfileComplete = false;
+
+function completeProfile() {
+  // Mark as completed
+  isProfileComplete = true;
+
+  // Hide the profile tab
+  document.getElementById('profile').classList.add('hidden');
+
+  // You can also store this in localStorage or update backend later
+  console.log("Profile marked as complete.");
+}
+
+// Show tab only if profile is incomplete
+window.onload = function () {
+  if (isProfileComplete) {
+    document.getElementById('profile').classList.add('hidden');
+  }
+}
+    let checkedInDays = JSON.parse(localStorage.getItem('checkedInDays')) || [];
+    let timerInterval;
+    let timeLeft = 1500; // 25 minutes in seconds
+    let isBreak = false;
+  
+    function renderLoginCalendar() {
+      const loginCalendar = document.getElementById('loginCalendar');
+      loginCalendar.innerHTML = '';
+      const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      days.forEach((day, index) => {
+        const dayElement = document.createElement('div');
+        dayElement.className = 'day';
+        dayElement.textContent = day;
+        if (checkedInDays.includes(index)) {
+          dayElement.classList.add('checked-in');
+        }
+        loginCalendar.appendChild(dayElement);
+      });
+    }
+  
+    function checkIn() {
+      const today = new Date().getDay(); // 0 (Sun) to 6 (Sat)
+      const currentDay = today - 1; // Adjust so Mon = 0, Sun = 6
+      if (currentDay >= 0 && currentDay < 5) { // Only Mon-Fri
+        if (!checkedInDays.includes(currentDay)) {
+          checkedInDays.push(currentDay);
+          localStorage.setItem('checkedInDays', JSON.stringify(checkedInDays));
+          document.getElementById("message").textContent = "✅ Check-in successful!";
+        } else {
+          document.getElementById("message").textContent = "✔️ You already checked in today!";
+        }
+      } else {
+        document.getElementById("message").textContent = "❌ Check-in only available Mon-Sun!";
+      }
+      renderLoginCalendar();
+    }
+  
+   
+    let currentDate = new Date();
+  let events = {};
+
+  function renderCalendar() {
+    const monthYear = document.getElementById('monthYear');
+    const calendarGrid = document.getElementById('calendarGrid');
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+
+    monthYear.textContent = currentDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+    const firstDay = new Date(year, month, 1).getDay();
+    const lastDate = new Date(year, month + 1, 0).getDate();
+
+    calendarGrid.innerHTML = "";
+
+    for (let i = 0; i < firstDay; i++) {
+      calendarGrid.innerHTML += `<div></div>`;
+    }
+
+    for (let day = 1; day <= lastDate; day++) {
+      const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      const hasEvent = events[dateStr];
+
+      calendarGrid.innerHTML += `
+  <div class="day ${hasEvent ? 'has-event' : ''}" onclick="selectDate('${dateStr}')">
+    <div style="font-size: 18px; margin-bottom: 5px;">${day}</div>
+    ${hasEvent ? `<div style="font-size: 10px;">${events[dateStr]}</div>` : ''}
+  </div>`;
+    }
+  }
+
+  function addEvent() {
+    const date = document.getElementById('eventDate').value;
+    const name = document.getElementById('eventName').value;
+    if (date && name) {
+      events[date] = name;
+      renderCalendar();
+    }
+  }
+
+  function removeEvent() {
+    const date = document.getElementById('eventDate').value;
+    if (events[date]) {
+      delete events[date];
+      renderCalendar();
+    }
+  }
+
+  function selectDate(date) {
+  document.getElementById('eventDate').value = date;
+  document.getElementById('eventName').focus();
+}
+  function prevMonth() {
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    renderCalendar();
+  }
+
+  function nextMonth() {
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    renderCalendar();
+  }
+
+  renderCalendar();
+  
+    function startTimer() {
+      if (timerInterval) return; // Prevent multiple intervals
+      timerInterval = setInterval(() => {
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          timerInterval = null;
+          alert(isBreak ? "Break time is over!" : "Pomodoro time is over!");
+          timeLeft = isBreak ? 1500 : 300; // Switch durations
+          isBreak = !isBreak;
+          updateTimerDisplay();
+        } else {
+          timeLeft--;
+          updateTimerDisplay();
+        }
+      }, 1000);
+    }
+  
+    function pauseTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+  
+    function resetTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      timeLeft = 1500;
+      isBreak = false;
+      updateTimerDisplay();
+    }
+  
+    function updateTimerDisplay() {
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      document.getElementById('timer').textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+  
+    function changeMusic(type, id, element) {
+      const musicFrame = document.getElementById('musicFrame');
+      const thumbnails = document.querySelectorAll('.music-thumbnails img');
+      thumbnails.forEach(img => img.classList.remove('active'));
+      element.classList.add('active');
+  
+      if (type === 'youtube') {
+        musicFrame.src = `https://www.youtube.com/embed/${id}?enablejsapi=1`;
+      }
+    }
+  
+    function playMusic() {
+      const musicFrame = document.getElementById('musicFrame');
+      musicFrame.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+    }
+  
+    function stopMusic() {
+      const musicFrame = document.getElementById('musicFrame');
+      musicFrame.contentWindow.postMessage('{"event":"command","func":"stopVideo","args":""}', '*');
+    }
+  </script>
+  
+  </body>
+</html> 

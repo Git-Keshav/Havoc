@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chat Room</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #1a1a1a, #2b2b2b);
+      color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      transition: background 0.5s ease, color 0.5s ease;
+    }
+
+    body.light {
+      background: #f5f5f5;
+      color: #121212;
+    }
+
+    #chat-container {
+      width: 100%;
+      max-width: 420px;
+      background: rgba(40, 40, 40, 0.9);
+      backdrop-filter: blur(6px);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 80vh;
+    }
+
+    #header {
+      background: #181818;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #333;
+    }
+
+    #header img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+    #header h2 {
+      font-size: 1.2rem;
+      margin: 0;
+      color: #eee;
+      flex-grow: 1;
+    }
+
+    #theme-toggle {
+      cursor: pointer;
+      background: none;
+      border: none;
+      color: inherit;
+      font-size: 1.2rem;
+    }
+
+    #messages {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: #202020;
+    }
+
+    .message {
+      max-width: 75%;
+      padding: 10px 14px;
+      border-radius: 16px;
+      font-size: 0.95rem;
+      word-wrap: break-word;
+      position: relative;
+    }
+
+    .sent {
+      align-self: flex-end;
+      background: #007bff;
+      color: white;
+      border-bottom-right-radius: 2px;
+    }
+
+    .received {
+      align-self: flex-start;
+      background: #333;
+      color: #ddd;
+      border-bottom-left-radius: 2px;
+    }
+
+    .timestamp {
+      font-size: 0.7rem;
+      opacity: 0.6;
+      display: block;
+      margin-top: 4px;
+    }
+
+    .status {
+      position: absolute;
+      bottom: 4px;
+      right: 10px;
+      font-size: 0.8rem;
+      opacity: 0.6;
+    }
+
+    #input {
+      display: flex;
+      padding: 10px;
+      border-top: 1px solid #333;
+      background: #181818;
+    }
+
+    #message {
+      flex: 1;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 20px;
+      background: #2b2b2b;
+      color: white;
+      outline: none;
+    }
+
+    #send {
+      background: #007bff;
+      border: none;
+      color: white;
+      margin-left: 10px;
+      padding: 10px 16px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    #emoji-picker {
+      position: absolute;
+      bottom: 60px;
+      left: 10px;
+      display: none;
+    }
+
+    #typing-indicator {
+      font-size: 0.8rem;
+      color: #aaa;
+      padding-left: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div id="chat-container">
+    <div id="header">
+      <img src="https://i.pravatar.cc/40" alt="User Avatar">
+      <h2 id="chat-title">Chat Room</h2>
+      <button id="theme-toggle">☀️</button>
+    </div>
+    <div id="messages"></div>
+    <div id="typing-indicator"></div>
+    <div id="input">
+      <input id="message" type="text" placeholder="Message..." autocomplete="off" />
+      <button id="send">➤</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+  <script>
+    const socket = io();
+    const messages = document.getElementById('messages');
+    const input = document.getElementById('message');
+    const sendBtn = document.getElementById('send');
+    const themeToggle = document.getElementById('theme-toggle');
+    const typingIndicator = document.getElementById('typing-indicator');
+
+  /*  let username = prompt('Enter your username:', 'Guest');
+    document.getElementById('chat-title').textContent = `Chat as ${username}`; */
+
+    sendBtn.onclick = () => {
+      const msg = input.value.trim();
+      if (msg) {
+        const timestamp = new Date().toLocaleTimeString();
+        socket.emit('chat message', { msg, username, timestamp });
+        appendMessage(msg, 'sent', timestamp, '✓✓');
+        input.value = '';
+        typingIndicator.textContent = '';
+      }
+    };
+
+    input.addEventListener('input', () => {
+      socket.emit('typing', username);
+    });
+
+    socket.on('chat message', ({ msg, username: from, timestamp }) => {
+      if (from !== username) {
+        appendMessage(`${from}: ${msg}`, 'received', timestamp);
+      }
+    });
+
+    socket.on('typing', (user) => {
+      if (user !== username) {
+        typingIndicator.textContent = `${user} is typing...`;
+        setTimeout(() => typingIndicator.textContent = '', 1500);
+      }
+    });
+
+    function appendMessage(text, type, timestamp = '', status = '') {
+      const msgElem = document.createElement('div');
+      msgElem.classList.add('message', type);
+      msgElem.innerHTML = `${text}<span class="timestamp">${timestamp}</span><span class="status">${status}</span>`;
+      messages.appendChild(msgElem);
+      messages.scrollTo({ top: messages.scrollHeight, behavior: 'smooth' });
+    }
+
+    themeToggle.onclick = () => {
+      document.body.classList.toggle('light');
+      themeToggle.textContent = document.body.classList.contains('light') ? '🌙' : '☀️';
+    };
+  </script>
+</body>
+</html>
